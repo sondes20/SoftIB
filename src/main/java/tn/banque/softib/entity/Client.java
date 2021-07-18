@@ -59,8 +59,7 @@ public class Client implements Serializable{
 	}
 	public Client(String identifiant, String nom, String prenom, Date dateNaissance, String adresse, String telephone,
 			String email, String fonction, TypeContratTravail typeCT, EtatCivil etatCivil, String nomConjoint,
-			String cINConjoint, String fonctionConjoint, int nbrEnfants, double revenuBrut, TypeClient type,
-			List<Compte> comptes, List<Facture> factures, List<Intervention_Client> interventionsclient) {
+			String cINConjoint, String fonctionConjoint, int nbrEnfants, double revenuBrut, TypeClient type) {
 		super();
 		this.identifiant = identifiant;
 		this.nom = nom;
@@ -73,14 +72,11 @@ public class Client implements Serializable{
 		this.typeCT = typeCT;
 		this.etatCivil = etatCivil;
 		this.nomConjoint = nomConjoint;
-		CINConjoint = cINConjoint;
+		this.CINConjoint = cINConjoint;
 		this.fonctionConjoint = fonctionConjoint;
 		this.nbrEnfants = nbrEnfants;
 		this.revenuBrut = revenuBrut;
 		this.type = type;
-		this.comptes = comptes;
-		this.factures = factures;
-		this.interventionsclient = interventionsclient;
 	}
 	public String getIdentifiant() {
 		return identifiant;

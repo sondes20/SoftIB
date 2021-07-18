@@ -2,10 +2,13 @@ package tn.banque.softib.entity;
 
 import java.io.Serializable;
 import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -23,10 +26,9 @@ public class Compte implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private TypeCompte type;
 	private String avantage;
-	private double solde;
 	@ManyToOne
 	private Banque banque;
-	@OneToMany
+	@OneToMany(mappedBy="compte", cascade={CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, fetch=FetchType.EAGER)
 	private List<Operation> operations;
 	@ManyToOne
 	private Client client;
@@ -34,6 +36,20 @@ public class Compte implements Serializable{
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
+	public Compte(String nCompte) {
+		super();
+		NCompte = nCompte;
+	}
+
+	public Compte(String nCompte, TypeCompte type, String avantage, Client client) {
+		super();
+		NCompte = nCompte;
+		this.type = type;
+		this.avantage = avantage;
+		this.client = client;
+	}
+
 	public String getNCompte() {
 		return NCompte;
 	}
@@ -52,21 +68,33 @@ public class Compte implements Serializable{
 	public void setAvantage(String avantage) {
 		this.avantage = avantage;
 	}
-	public double getSolde() {
-		return solde;
-	}
-	public void setSolde(double solde) {
-		this.solde = solde;
-	}
+	
 	public Banque getBanque() {
 		return banque;
 	}
 	public void setBanque(Banque banque) {
 		this.banque = banque;
 	}
+	
+	public List<Operation> getOperations() {
+		return operations;
+	}
+
+	public void setOperations(List<Operation> operations) {
+		this.operations = operations;
+	}
+
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
+	}
+
 	@Override
 	public String toString() {
-		return "Compte [NCompte=" + NCompte + ", type=" + type + ", avantage=" + avantage + ", solde=" + solde
+		return "Compte [NCompte=" + NCompte + ", type=" + type + ", avantage=" + avantage
 				+ ", banque=" + banque + ", operations=" + operations + ", client=" + client + "]";
 	}
 	

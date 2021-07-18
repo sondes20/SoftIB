@@ -35,15 +35,11 @@ public class Banque implements Serializable{
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Banque(String nom, String telephone, String adresse, List<Agence> agences, List<PackProduit> packProduits,
-			List<Compte> comptes) {
+	public Banque(String nom, String telephone, String adresse) {
 		super();
 		this.nom = nom;
 		this.telephone = telephone;
 		this.adresse = adresse;
-		this.agences = agences;
-		this.packProduits = packProduits;
-		/*this.comptes = comptes;*/
 	}
 	public long getId() {
 		return id;

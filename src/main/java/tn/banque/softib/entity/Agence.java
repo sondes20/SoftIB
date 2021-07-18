@@ -31,13 +31,12 @@ public class Agence implements Serializable{
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Agence(String nom, String adresse, String nomResponsable, String telephone, Banque banque) {
+	public Agence(String nom, String adresse, String nomResponsable, String telephone) {
 		super();
 		this.nom = nom;
 		this.adresse = adresse;
 		this.nomResponsable = nomResponsable;
 		Telephone = telephone;
-		this.banque = banque;
 	}
 	public long getId() {
 		return id;
