@@ -1,17 +1,15 @@
 package tn.banque.softib.services;
 
-import java.text.ParseException;
+import java.util.Set;
 
-
-import tn.banque.softib.entity.Operation;
+import tn.banque.softib.entity.Compte;
+import tn.banque.softib.entity.TypeOperation;
 
 public interface IOperationService {
 	
-	public long ajouterOperation(Operation operation);
 	public long modifierOperation(long idOp);//accee pour l'admin seulement
-	public double getSoldeByNumCompte(String numCompte);
-	public double calculerSoldeRetrait(double montant, String numCompte);
-	public double calculerSoldeOuvertureDeCompte(double montant, String numCompte);
-	public double calculerSoldeVirement(double montant, String numCompteUsagers, String numCompteBeneficiaire) throws ParseException;
-
+	public Compte verser(TypeOperation type, String numCompte, String idAgent, double montant);
+	public Compte retrait(TypeOperation type, String numCompte, String idAgent, double montant);
+	public Set<Compte> virement(TypeOperation type, String numCptUser, String numCptBenef, String idAgent, double montant);
+	
 }

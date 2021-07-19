@@ -24,6 +24,12 @@ public class Client implements Serializable{
 	@Id
 	@Column(updatable=false)
 	private String identifiant; //CIN/PASSEPORT
+	public Client(String identifiant, String nom, String prenom) {
+		super();
+		this.identifiant = identifiant;
+		this.nom = nom;
+		this.prenom = prenom;
+	}
 	private String nom;
 	private String prenom;
 	@Temporal(TemporalType.DATE)
@@ -51,8 +57,8 @@ public class Client implements Serializable{
 	private List<Intervention_Client> interventionsclient;
 	@OneToMany(mappedBy="client", cascade=CascadeType.ALL)
 	private List<Credit> credits;
-	@OneToMany(mappedBy="client", cascade=CascadeType.ALL)
-	private List<Intervention_Client> interventions;
+	@OneToMany(mappedBy="client", cascade=CascadeType.REMOVE)
+	private List<Demande> demandes;
 	public Client() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -191,6 +197,19 @@ public class Client implements Serializable{
 	}
 	public void setInterventionsclient(List<Intervention_Client> interventionsclient) {
 		this.interventionsclient = interventionsclient;
+	}
+	
+	public List<Credit> getCredits() {
+		return credits;
+	}
+	public void setCredits(List<Credit> credits) {
+		this.credits = credits;
+	}
+	public List<Demande> getDemandes() {
+		return demandes;
+	}
+	public void setDemandes(List<Demande> demandes) {
+		this.demandes = demandes;
 	}
 	@Override
 	public String toString() {

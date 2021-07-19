@@ -74,11 +74,10 @@ public class SoftIBApplicationTests {
 		Client c1 = new Client("07002150", "Cherni", "Houssem", d1, "Kef", "55255411", "chernihoussem@gmail.com", "Enseignant", TypeContratTravail.CDI, EtatCivil.CELIBATAIRE, "", "", "", 0, 10000, TypeClient.PHYSIQUE);
 		clientService.ajouterClient(c1);
 		*/
-		/*Compte compte1 = new Compte();
-		compte1.setType(TypeCompte.COURANT);
-		compte1.setAvantage("");
-		clientService.ajouterEtAffecterClientACompte("07002150");*/
 		
+		//clientService.ajouterEtAffecterClientACompte("07002150", "abc", TypeCompte.COURANT);
+		//clientService.ajouterEtAffecterClientACompte("08061621", "abc", TypeCompte.EPARGNE);
+		//compteService.modifierCompte("08061621/PHYSIQUE", "abc", TypeCompte.EPARGNE);
 		//clientService.affecterBanqueACompte(1, "07002150/PHYSIQUE");
 		Date d = date.parse(LocalDate.now().toString());
 		//Operation op4 = new Operation(TypeOperation.OUVERTUREDUCOMPTE, SensOperation.CREDIT, d, 1300, compteService.getCompte("07002150/PHYSIQUE"), 0);
@@ -91,7 +90,6 @@ public class SoftIBApplicationTests {
 		
 		//l.info(opeSer.getSoldeByNumCompte("08061621/PHYSIQUE"));
 		
-		l.info(opeSer.calculerSoldeVirement(200, "08061621/PHYSIQUE", "07002150/PHYSIQUE"));
 		
 	
 	}

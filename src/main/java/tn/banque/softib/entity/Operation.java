@@ -32,31 +32,21 @@ public class Operation implements Serializable{
 	@Temporal(TemporalType.DATE)
 	private Date date;
 	private double montant;
-	private double solde;
 	@ManyToOne
 	private Compte compte;
+	@ManyToOne
+	private Agent agent;
 	public Operation() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Operation(TypeOperation type, SensOperation sens, Date date, double montant, Compte compte, double solde) {
+	public Operation(TypeOperation type, SensOperation sens, Date date, double montant, Compte compte) {
 		super();
 		this.type = type;
 		this.sens = sens;
 		this.date = date;
 		this.montant = montant;
 		this.compte = compte;
-		this.solde = solde;
-	}
-	
-	public Operation(TypeOperation type, SensOperation sens, Date date, double montant, Compte compteuser, Compte compteBnef) {
-		super();
-		this.type = type;
-		this.sens = sens;
-		this.date = date;
-		this.montant = montant;
-		this.compte = compteuser;
-		this.compte = compteBnef;
 	}
 	public long getId() {
 		return id;
@@ -88,18 +78,25 @@ public class Operation implements Serializable{
 	public void setMontant(double montant) {
 		this.montant = montant;
 	}
-	public double getSolde() {
-		return solde;
-	}
-	public void setSolde(double solde) {
-		this.solde = solde;
-	}
 	public Compte getCompte() {
 		return compte;
 	}
 	public void setCompte(Compte compte) {
 		this.compte = compte;
 	}
+	
+	public Agent getAgent() {
+		return agent;
+	}
+	public void setAgent(Agent agent) {
+		this.agent = agent;
+	}
+	@Override
+	public String toString() {
+		return "Operation [id=" + id + ", type=" + type + ", sens=" + sens + ", date=" + date + ", montant=" + montant
+				+ ", compte=" + compte + ", agent=" + agent + "]";
+	}
+	
 	
 	
 

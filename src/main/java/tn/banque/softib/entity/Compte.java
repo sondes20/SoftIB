@@ -1,6 +1,7 @@
 package tn.banque.softib.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -12,6 +13,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 public class Compte implements Serializable{
@@ -23,14 +26,17 @@ public class Compte implements Serializable{
 	@Id
 	@Column(updatable=false)
 	private String NCompte;
+	@Temporal(TemporalType.DATE)
+	private Date dateCreation;
 	@Enumerated(EnumType.STRING)
 	private TypeCompte type;
 	private String avantage;
+	private double solde;
 	@ManyToOne
 	private Banque banque;
 	@OneToMany(mappedBy="compte", cascade={CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, fetch=FetchType.EAGER)
 	private List<Operation> operations;
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.REMOVE)
 	private Client client;
 	public Compte() {
 		super();
@@ -42,12 +48,13 @@ public class Compte implements Serializable{
 		NCompte = nCompte;
 	}
 
-	public Compte(String nCompte, TypeCompte type, String avantage, Client client) {
+	public Compte(String nCompte, Date dateCreation, TypeCompte type, String avantage, double solde) {
 		super();
 		NCompte = nCompte;
+		this.dateCreation = dateCreation;
 		this.type = type;
 		this.avantage = avantage;
-		this.client = client;
+		this.solde = solde;
 	}
 
 	public String getNCompte() {
@@ -92,11 +99,30 @@ public class Compte implements Serializable{
 		this.client = client;
 	}
 
+	public double getSolde() {
+		return solde;
+	}
+
+	public void setSolde(double solde) {
+		this.solde = solde;
+	}
+
+	public Date getDateCreation() {
+		return dateCreation;
+	}
+
+	public void setDateCreation(Date dateCreation) {
+		this.dateCreation = dateCreation;
+	}
+
 	@Override
 	public String toString() {
-		return "Compte [NCompte=" + NCompte + ", type=" + type + ", avantage=" + avantage
-				+ ", banque=" + banque + ", operations=" + operations + ", client=" + client + "]";
+		return "Compte [NCompte=" + NCompte + ", dateCreation=" + dateCreation + ", type=" + type + ", avantage="
+				+ avantage + ", solde=" + solde + ", banque=" + banque + ", operations=" + operations + ", client="
+				+ client + "]";
 	}
+
+	
 	
 	
 

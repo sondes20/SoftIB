@@ -1,20 +1,21 @@
 package tn.banque.softib.services;
 
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import tn.banque.softib.SoftIBApplicationTests;
+import tn.banque.softib.entity.Agent;
+import tn.banque.softib.entity.Compte;
 import tn.banque.softib.entity.Operation;
 import tn.banque.softib.entity.SensOperation;
 import tn.banque.softib.entity.TypeOperation;
+import tn.banque.softib.repository.IAgentRepository;
 import tn.banque.softib.repository.ICompteRepository;
 import tn.banque.softib.repository.IOperationRepository;
 
@@ -26,62 +27,61 @@ public class OperationServices implements IOperationService {
 	@Autowired
 	ICompteRepository cmptRepo;
 	@Autowired
-	IOperationService opService;
-
-	@Override
-	public long ajouterOperation(Operation operation) {
-		
-		if(operation.getType().equals(TypeOperation.OUVERTUREDUCOMPTE)){
-			operation.setSolde(opService.calculerSoldeOuvertureDeCompte(operation.getMontant(), operation.getCompte().getNCompte()));
-			operationRepo.save(operation);
-		}else if(operation.getType().equals(TypeOperation.RETRAIT)){
-			operation.setSolde(opService.calculerSoldeRetrait(operation.getMontant(), operation.getCompte().getNCompte()));
-			operationRepo.save(operation);
-		}
-		return operationRepo.save(operation).getId();
-	}
-
+	IAgentRepository agentRepo;
+	
 	@Override
 	public long modifierOperation(long idOp) {
-		
-		return (operationRepo.save(operationRepo.findById(idOp).get())).getId();
-		
+		Operation op = operationRepo.findById(idOp).get();
+		return operationRepo.save(op).getId();
 	}
-	
-
 	@Override
-	public double calculerSoldeRetrait(double montant, String numCompte) {
-		double solde = operationRepo.findSoldeByCompte(numCompte);
-		solde-=montant;
-		return solde;
+	@Transactional
+	public Compte verser(TypeOperation type, String numCompte, String idAgent, double montant) {
+		Compte cp = cmptRepo.findById(numCompte).get();
+		Agent ag = agentRepo.findById(idAgent).get();
+		Operation op = new Operation();
+		op.setType(TypeOperation.VERSEMENT);
+		op.setCompte(cp);
+		op.setDate(new Date());
+		op.setSens(SensOperation.CREDIT);
+		op.setMontant(montant);
+		op.setAgent(ag);
+		operationRepo.save(op);
+		cp.setSolde(cp.getSolde()+montant);
+		return cp;
 	}
-
 	@Override
-	public double calculerSoldeOuvertureDeCompte(double montant, String numCompte) {
-		double solde=0;
-		solde+=montant;
-		return solde;
+	@Transactional
+	public Compte retrait(TypeOperation type, String numCompte, String idAgent, double montant){
+		Compte cp = cmptRepo.findById(numCompte).get();
+		if(cp.getSolde()<montant){
+			l.error("Solde insuffisant!");
+		}else{
+		Agent ag = agentRepo.findById(idAgent).get();
+		Operation op = new Operation();
+		op.setType(TypeOperation.RETRAIT);
+		op.setCompte(cp);
+		op.setDate(new Date());
+		op.setSens(SensOperation.DEBIT);
+		op.setMontant(montant);
+		op.setAgent(ag);
+		operationRepo.save(op);
+		cp.setSolde(cp.getSolde()-montant);
+		l.info("Operation réussi");
+		}
+		return cp;
 	}
-
 	@Override
-	public double calculerSoldeVirement(double montant, String numCompteUsagers, String numCompteBeneficiaire) throws ParseException{
-		double soldeUser = opService.getSoldeByNumCompte(numCompteUsagers);
-		l.info(soldeUser);
-		double soldeBenef = opService.getSoldeByNumCompte(numCompteBeneficiaire);
-		l.info(soldeBenef);
-		soldeUser-=montant;
-		soldeBenef +=montant;
-		l.info(soldeUser);
-		l.info(soldeBenef);
-		return soldeUser;
+	@Transactional
+	public Set<Compte> virement(TypeOperation type, String numCptUser, String numCptBenef, String idAgent,
+			double montant) {
+		Compte cptUser = retrait(TypeOperation.RETRAIT, numCptUser, idAgent, montant);
+		Compte cptBenef = verser(TypeOperation.VERSEMENT, numCptBenef, idAgent, montant);
+		Set<Compte> comptes = new HashSet<>();
+		comptes.add(cptUser);
+		comptes.add(cptBenef);
+		return comptes;
 	}
-
-	@Override
-	public double getSoldeByNumCompte(String numCompte) {
-		
-		return operationRepo.findSoldeByCompte(numCompte);
-	}
-
 
 	
 

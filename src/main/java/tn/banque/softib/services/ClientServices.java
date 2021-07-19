@@ -40,10 +40,12 @@ public class ClientServices implements IClientServices {
 	}
 
 	@Override
-	public void ajouterEtAffecterClientACompte(String idC) {
+	public void ajouterEtAffecterClientACompte(String idC, String av, TypeCompte type) {
 		Client c = clientRepo.findById(idC).get();
 		String idCompte = idC+="/"+ c.getType();
 		Compte comp1 = new Compte(idCompte);
+		comp1.setAvantage(av);
+		comp1.setType(type);
 		comp1.setClient(c);
 		compteRepo.save(comp1);
 		
