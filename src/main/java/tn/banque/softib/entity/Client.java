@@ -49,7 +49,7 @@ public class Client implements Serializable{
 	private double revenuBrut;
 	@Enumerated(EnumType.STRING)
 	private TypeClient type;
-	@OneToMany(mappedBy="client", cascade=CascadeType.ALL)
+	@OneToMany(mappedBy="client", cascade={CascadeType.PERSIST, CascadeType.REFRESH})
 	private List<Compte> comptes;
 	@OneToMany(mappedBy="client", cascade=CascadeType.ALL)
 	private List<Facture> factures;

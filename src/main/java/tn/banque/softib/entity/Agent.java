@@ -24,20 +24,19 @@ public class Agent implements Serializable{
 	private String nom;
 	private String prenom;
 	private int nbClients;
-	@OneToMany
+	@OneToMany(cascade=CascadeType.MERGE)
 	private List<Client> clients;
-	@OneToMany(mappedBy="agent", cascade={CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, fetch=FetchType.EAGER )
+	@OneToMany(mappedBy="agent", cascade={CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, fetch=FetchType.EAGER)
 	public List<Operation> operations;
 	public Agent() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Agent(String code, String nom, String prenom, List<Client> clients) {
+	public Agent(String code, String nom, String prenom) {
 		super();
 		this.code = code;
 		this.nom = nom;
 		this.prenom = prenom;
-		this.clients = clients;
 	}
 	public String getCode() {
 		return code;

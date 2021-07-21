@@ -17,7 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class Compte implements Serializable{
+public class Compte implements Serializable, Comparable<Compte>{
 
 	/**
 	 * 
@@ -38,6 +38,8 @@ public class Compte implements Serializable{
 	private List<Operation> operations;
 	@ManyToOne(cascade=CascadeType.REMOVE)
 	private Client client;
+	@OneToMany(mappedBy="compte")
+	private List<ChiffreAffaire> chiffreAffaires;
 	public Compte() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -120,6 +122,12 @@ public class Compte implements Serializable{
 		return "Compte [NCompte=" + NCompte + ", dateCreation=" + dateCreation + ", type=" + type + ", avantage="
 				+ avantage + ", solde=" + solde + ", banque=" + banque + ", operations=" + operations + ", client="
 				+ client + "]";
+	}
+
+	@Override
+	public int compareTo(Compte o) {
+		
+		return (int) (this.solde-o.solde);
 	}
 
 	

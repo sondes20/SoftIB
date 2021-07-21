@@ -1,5 +1,7 @@
 package tn.banque.softib.services;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,7 +38,7 @@ public class OperationServices implements IOperationService {
 	}
 	@Override
 	@Transactional
-	public Compte verser(TypeOperation type, String numCompte, String idAgent, double montant) {
+	public Compte verser(TypeOperation type, String numCompte, String idAgent, double montant){
 		Compte cp = cmptRepo.findById(numCompte).get();
 		Agent ag = agentRepo.findById(idAgent).get();
 		Operation op = new Operation();
@@ -74,13 +76,18 @@ public class OperationServices implements IOperationService {
 	@Override
 	@Transactional
 	public Set<Compte> virement(TypeOperation type, String numCptUser, String numCptBenef, String idAgent,
-			double montant) {
-		Compte cptUser = retrait(TypeOperation.RETRAIT, numCptUser, idAgent, montant);
+			double montant){
+		Compte cptUser = retrait(TypeOperation.RETRAIT,  numCptUser, idAgent, montant);
 		Compte cptBenef = verser(TypeOperation.VERSEMENT, numCptBenef, idAgent, montant);
 		Set<Compte> comptes = new HashSet<>();
 		comptes.add(cptUser);
 		comptes.add(cptBenef);
 		return comptes;
+	}
+	@Override
+	public Agent getAgentById(String id) {
+		
+		return agentRepo.findById(id).get();
 	}
 
 	

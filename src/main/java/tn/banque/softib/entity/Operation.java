@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,7 +33,7 @@ public class Operation implements Serializable{
 	@Temporal(TemporalType.DATE)
 	private Date date;
 	private double montant;
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	private Compte compte;
 	@ManyToOne
 	private Agent agent;
