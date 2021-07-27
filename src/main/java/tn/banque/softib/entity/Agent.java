@@ -10,6 +10,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Agent implements Serializable{
 
@@ -24,10 +26,14 @@ public class Agent implements Serializable{
 	private String nom;
 	private String prenom;
 	private int nbClients;
-	@OneToMany(cascade=CascadeType.MERGE)
+	@OneToMany(cascade={CascadeType.MERGE, CascadeType.PERSIST})
+	@JsonIgnore
 	private List<Client> clients;
-	@OneToMany(mappedBy="agent", cascade={CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="agent", cascade={CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE})
+	@JsonIgnore
 	public List<Operation> operations;
+	@OneToMany
+	private List<Demande> demandes;
 	public Agent() {
 		super();
 		// TODO Auto-generated constructor stub

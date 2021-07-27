@@ -10,7 +10,7 @@ import tn.banque.softib.entity.Client;
 @Repository
 public interface IClientRepository extends CrudRepository<Client, String> {
 	
-	@Query("select c from Client c join c.comptes comp join comp.banque b join b.agences a where a.id=:idA ")
+	@Query("select c from Client c join c.comptes comp join comp.agence ag where ag.id=:idA ")
 	public Set<Client> listeClientsParAgence(@Param("idA") long idA);
 
 }

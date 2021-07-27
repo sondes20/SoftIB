@@ -16,6 +16,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Compte implements Serializable, Comparable<Compte>{
 
@@ -29,35 +31,56 @@ public class Compte implements Serializable, Comparable<Compte>{
 	@Temporal(TemporalType.DATE)
 	private Date dateCreation;
 	@Enumerated(EnumType.STRING)
-	private TypeCompte type;
+	private TypeCompte typeCompte;
 	private String avantage;
 	private double solde;
-	@ManyToOne
-	private Banque banque;
 	@OneToMany(mappedBy="compte", cascade={CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, fetch=FetchType.EAGER)
+	@JsonIgnore
 	private List<Operation> operations;
 	@ManyToOne(cascade=CascadeType.REMOVE)
+	@JsonIgnore
 	private Client client;
-	@OneToMany(mappedBy="compte")
-	private List<ChiffreAffaire> chiffreAffaires;
+	@ManyToOne
+	@JsonIgnore
+	private Agence agence;
 	public Compte() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
-	public Compte(String nCompte) {
+
+	public Compte(String nCompte, Date dateCreation, TypeCompte typeCompte, String avantage) {
 		super();
 		NCompte = nCompte;
+		this.dateCreation = dateCreation;
+		this.typeCompte = typeCompte;
+		this.avantage = avantage;
 	}
+
+	public Compte(TypeCompte typeCompte, String avantage) {
+		super();
+		this.typeCompte = typeCompte;
+		this.avantage = avantage;
+	}
+
+	public TypeCompte getTypeCompte() {
+		return typeCompte;
+	}
+
+
+	public void setTypeCompte(TypeCompte typeCompte) {
+		this.typeCompte = typeCompte;
+	}
+
 
 	public Compte(String nCompte, Date dateCreation, TypeCompte type, String avantage, double solde) {
 		super();
 		NCompte = nCompte;
 		this.dateCreation = dateCreation;
-		this.type = type;
+		this.typeCompte = type;
 		this.avantage = avantage;
 		this.solde = solde;
 	}
+
 
 	public String getNCompte() {
 		return NCompte;
@@ -65,24 +88,12 @@ public class Compte implements Serializable, Comparable<Compte>{
 	public void setNCompte(String nCompte) {
 		NCompte = nCompte;
 	}
-	public TypeCompte getType() {
-		return type;
-	}
-	public void setType(TypeCompte type) {
-		this.type = type;
-	}
+	
 	public String getAvantage() {
 		return avantage;
 	}
 	public void setAvantage(String avantage) {
 		this.avantage = avantage;
-	}
-	
-	public Banque getBanque() {
-		return banque;
-	}
-	public void setBanque(Banque banque) {
-		this.banque = banque;
 	}
 	
 	public List<Operation> getOperations() {
@@ -117,12 +128,21 @@ public class Compte implements Serializable, Comparable<Compte>{
 		this.dateCreation = dateCreation;
 	}
 
+	public Agence getAgence() {
+		return agence;
+	}
+
+	public void setAgence(Agence agence) {
+		this.agence = agence;
+	}
+
 	@Override
 	public String toString() {
-		return "Compte [NCompte=" + NCompte + ", dateCreation=" + dateCreation + ", type=" + type + ", avantage="
-				+ avantage + ", solde=" + solde + ", banque=" + banque + ", operations=" + operations + ", client="
+		return "Compte [NCompte=" + NCompte + ", dateCreation=" + dateCreation + ", type=" + typeCompte + ", avantage="
+				+ avantage + ", solde=" + solde + ", operations=" + operations + ", client="
 				+ client + "]";
 	}
+	
 
 	@Override
 	public int compareTo(Compte o) {

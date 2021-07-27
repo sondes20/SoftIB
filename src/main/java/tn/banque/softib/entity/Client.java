@@ -9,10 +9,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Client implements Serializable{
@@ -22,14 +25,8 @@ public class Client implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
-	@Column(updatable=false)
+	@Column(updatable=false, nullable=false)
 	private String identifiant; //CIN/PASSEPORT
-	public Client(String identifiant, String nom, String prenom) {
-		super();
-		this.identifiant = identifiant;
-		this.nom = nom;
-		this.prenom = prenom;
-	}
 	private String nom;
 	private String prenom;
 	@Temporal(TemporalType.DATE)
@@ -39,33 +36,28 @@ public class Client implements Serializable{
 	private String email;
 	private String fonction;
 	@Enumerated(EnumType.STRING)
-	private TypeContratTravail typeCT;
-	@Enumerated(EnumType.STRING)
-	private EtatCivil etatCivil;
-	private String nomConjoint;
-	private String CINConjoint;
-	private String fonctionConjoint;
-	private int nbrEnfants;
-	private double revenuBrut;
-	@Enumerated(EnumType.STRING)
 	private TypeClient type;
-	@OneToMany(mappedBy="client", cascade={CascadeType.PERSIST, CascadeType.REFRESH})
+	@OneToMany(mappedBy="client", cascade={CascadeType.PERSIST, CascadeType.REFRESH}, fetch=FetchType.EAGER)
+	@JsonIgnore
 	private List<Compte> comptes;
 	@OneToMany(mappedBy="client", cascade=CascadeType.ALL)
+	@JsonIgnore
 	private List<Facture> factures;
 	@OneToMany(mappedBy="client", cascade=CascadeType.ALL)
+	@JsonIgnore
 	private List<Intervention_Client> interventionsclient;
 	@OneToMany(mappedBy="client", cascade=CascadeType.ALL)
+	@JsonIgnore
 	private List<Credit> credits;
-	@OneToMany(mappedBy="client", cascade=CascadeType.REMOVE)
+	@OneToMany
+	@JsonIgnore
 	private List<Demande> demandes;
 	public Client() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	public Client(String identifiant, String nom, String prenom, Date dateNaissance, String adresse, String telephone,
-			String email, String fonction, TypeContratTravail typeCT, EtatCivil etatCivil, String nomConjoint,
-			String cINConjoint, String fonctionConjoint, int nbrEnfants, double revenuBrut, TypeClient type) {
+			String email, String fonction, TypeClient type) {
 		super();
 		this.identifiant = identifiant;
 		this.nom = nom;
@@ -75,13 +67,6 @@ public class Client implements Serializable{
 		this.telephone = telephone;
 		this.email = email;
 		this.fonction = fonction;
-		this.typeCT = typeCT;
-		this.etatCivil = etatCivil;
-		this.nomConjoint = nomConjoint;
-		this.CINConjoint = cINConjoint;
-		this.fonctionConjoint = fonctionConjoint;
-		this.nbrEnfants = nbrEnfants;
-		this.revenuBrut = revenuBrut;
 		this.type = type;
 	}
 	public String getIdentifiant() {
@@ -132,48 +117,6 @@ public class Client implements Serializable{
 	public void setFonction(String fonction) {
 		this.fonction = fonction;
 	}
-	public TypeContratTravail getTypeCT() {
-		return typeCT;
-	}
-	public void setTypeCT(TypeContratTravail typeCT) {
-		this.typeCT = typeCT;
-	}
-	public EtatCivil getEtatCivil() {
-		return etatCivil;
-	}
-	public void setEtatCivil(EtatCivil etatCivil) {
-		this.etatCivil = etatCivil;
-	}
-	public String getNomConjoint() {
-		return nomConjoint;
-	}
-	public void setNomConjoint(String nomConjoint) {
-		this.nomConjoint = nomConjoint;
-	}
-	public String getCINConjoint() {
-		return CINConjoint;
-	}
-	public void setCINConjoint(String cINConjoint) {
-		CINConjoint = cINConjoint;
-	}
-	public String getFonctionConjoint() {
-		return fonctionConjoint;
-	}
-	public void setFonctionConjoint(String fonctionConjoint) {
-		this.fonctionConjoint = fonctionConjoint;
-	}
-	public int getNbrEnfants() {
-		return nbrEnfants;
-	}
-	public void setNbrEnfants(int nbrEnfants) {
-		this.nbrEnfants = nbrEnfants;
-	}
-	public double getRevenuBrut() {
-		return revenuBrut;
-	}
-	public void setRevenuBrut(double revenuBrut) {
-		this.revenuBrut = revenuBrut;
-	}
 	public TypeClient getType() {
 		return type;
 	}
@@ -198,7 +141,6 @@ public class Client implements Serializable{
 	public void setInterventionsclient(List<Intervention_Client> interventionsclient) {
 		this.interventionsclient = interventionsclient;
 	}
-	
 	public List<Credit> getCredits() {
 		return credits;
 	}
@@ -211,16 +153,14 @@ public class Client implements Serializable{
 	public void setDemandes(List<Demande> demandes) {
 		this.demandes = demandes;
 	}
+	
 	@Override
 	public String toString() {
 		return "Client [identifiant=" + identifiant + ", nom=" + nom + ", prenom=" + prenom + ", dateNaissance="
 				+ dateNaissance + ", adresse=" + adresse + ", telephone=" + telephone + ", email=" + email
-				+ ", fonction=" + fonction + ", typeCT=" + typeCT + ", etatCivil=" + etatCivil + ", nomConjoint="
-				+ nomConjoint + ", CINConjoint=" + CINConjoint + ", fonctionConjoint=" + fonctionConjoint
-				+ ", nbrEnfants=" + nbrEnfants + ", revenuBrut=" + revenuBrut + ", type=" + type + ", comptes="
-				+ comptes + ", factures=" + factures + " , interventionsclient="
-				+ interventionsclient + "]";
+				+ ", fonction=" + fonction + ", type=" + type + ", comptes=" + comptes + ", factures=" + factures
+				+ ", interventionsclient=" + interventionsclient + ", credits=" + credits + ", demandes=" + demandes
+				+ "]";
 	}
 	
-
 }

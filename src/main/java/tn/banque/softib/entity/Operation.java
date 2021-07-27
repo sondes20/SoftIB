@@ -3,6 +3,7 @@ package tn.banque.softib.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,9 +12,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Operation implements Serializable{
@@ -33,9 +38,11 @@ public class Operation implements Serializable{
 	@Temporal(TemporalType.DATE)
 	private Date date;
 	private double montant;
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(cascade=CascadeType.MERGE, fetch=FetchType.EAGER)
+	@JsonIgnore
 	private Compte compte;
-	@ManyToOne
+	@ManyToOne( fetch=FetchType.EAGER)
+	@JsonIgnore
 	private Agent agent;
 	public Operation() {
 		super();
@@ -48,6 +55,14 @@ public class Operation implements Serializable{
 		this.date = date;
 		this.montant = montant;
 		this.compte = compte;
+	}
+	
+	public Operation(Date date, TypeOperation type, SensOperation sens, double montant) {
+		super();
+		this.type = type;
+		this.sens = sens;
+		this.date = date;
+		this.montant = montant;
 	}
 	public long getId() {
 		return id;

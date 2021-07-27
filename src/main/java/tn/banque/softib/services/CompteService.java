@@ -3,20 +3,20 @@ package tn.banque.softib.services;
 
 import java.util.List;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import tn.banque.softib.entity.ChiffreAffaire;
+import tn.banque.softib.entity.Agence;
+import tn.banque.softib.entity.Agent;
+import tn.banque.softib.entity.Banque;
 import tn.banque.softib.entity.Compte;
-import tn.banque.softib.entity.Operation;
-import tn.banque.softib.entity.SensOperation;
 import tn.banque.softib.entity.TypeCompte;
-import tn.banque.softib.repository.IChiffreAffaireRepository;
+import tn.banque.softib.repository.IAgenceRepository;
+import tn.banque.softib.repository.IAgentRepository;
+import tn.banque.softib.repository.IBanqueRepository;
 import tn.banque.softib.repository.ICompteRepository;
 import tn.banque.softib.repository.IOperationRepository;
 @Service
@@ -27,7 +27,9 @@ public class CompteService implements ICompteService {
 	@Autowired
 	IOperationRepository operationRepo;
     @Autowired
-    IChiffreAffaireRepository chiffreAffaireRepo;
+    IAgentRepository agentRepo;
+    @Autowired
+    IAgenceRepository agenceRepo;
 	@Override
 	public Compte getCompte(String id) {
 		
@@ -38,16 +40,16 @@ public class CompteService implements ICompteService {
 	public Compte modifierCompte(String ic, String av, TypeCompte type) {
 		Compte c = compteRepo.findById(ic).get();
 		c.setAvantage(av);
-		c.setType(type);
+		c.setTypeCompte(type);
 		return compteRepo.save(c);
 	}
 
 	@Override
-	public long getNombreComptesParType(TypeCompte type) {
-		
-		return compteRepo.findCountCompteByType(type);
+	public long getNombreComptesParTypeEtAgence(TypeCompte type, long idAgence) {
+		Agence ag = agenceRepo.findById(idAgence).get();
+		return compteRepo.findCountCompteByTypeAndAgence(type, ag);
 	}
-
+	
 	@Override
 	public List<Compte> getCompteEpargne() {
 		
@@ -59,78 +61,28 @@ public class CompteService implements ICompteService {
 		
 		return compteRepo.findCompteCourant(TypeCompte.COURANT);
 	}
-
+	
 	@Override
-	public List<Operation> getListOperationsDebitDuCompteEpargneParAnnee(int annee) {
-		List<Operation> opDebit = operationRepo.findListOperationsBySensAndTypeCompteAndAnnee(SensOperation.DEBIT, TypeCompte.EPARGNE, annee);
-		for(Operation o: opDebit)
-			l.info(o);
-			
-		return opDebit;
-	}
-
-	@Override
-	public List<Operation> getListOperationsDebitDuCompteCourantParAnnee(int annee) {
-		List<Operation> opDebit = operationRepo.findListOperationsBySensAndTypeCompteAndAnnee(SensOperation.DEBIT, TypeCompte.COURANT, annee);
-		for(Operation o: opDebit){
-			l.info(o);
-		}
-		return opDebit;
-	}
-
-	@Override
-	public double getCADebiteurCompte(int annee, String numCp) {
-		Compte cp = compteRepo.findById(numCp).get();
-		return operationRepo.findCAByCompte(SensOperation.DEBIT, cp, annee);
+	public double avgSolde() {
 		
+		return compteRepo.findAVGFromSolde();
 	}
-	
-	
 
 	@Override
-	public List<Double> getListCACompteCourantDebiteurParAnnee(int annee) {
-		List<Double> CA = new ArrayList<>();
-		List<Compte> comptes = getCompteCourant();
-		for(Compte c : comptes){
-				double ca = getCADebiteurCompte(annee, c.getNCompte());
-				CA.add(ca);
-				Collections.sort(CA, Collections.reverseOrder());
-				l.info(CA);	
-			
-		}
-		return CA;
+	public List<String> listNumCompteAyantMaxSolde(TypeCompte type) {
 		
+		return compteRepo.getComptePlusCrediteurByOrdreDescAndAnnee(type);
 	}
 
 	@Override
-	public long ajouterChiffreAffaireDebit(int annee, String numCpt, SensOperation sens) {
-		ChiffreAffaire chiffre = new ChiffreAffaire();
-		chiffre.setSens(SensOperation.DEBIT);
-			chiffre.setAnnee(annee);
-			chiffre.setCompte(compteRepo.findById(numCpt).get());
-			chiffre.setMontant(getCADebiteurCompte(annee, numCpt));
-			return chiffreAffaireRepo.save(chiffre).getId();
-		}
-
-	@Override
-	public double getCACrediteurCompte(int annee, String numCp) {
-		Compte cp = compteRepo.findById(numCp).get();
-		return operationRepo.findCAByCompte(SensOperation.CREDIT, cp, annee);
+	public List<String> listNumCompteAyantMinSolde(TypeCompte type) {
 		
+		return compteRepo.getComptePlusDebiteurByOrdreDescAndAnnee(type);
 	}
 
 	@Override
-	public long ajouterChiffreAffaireCredit(int annee, String numCpt, SensOperation sens) {
-		ChiffreAffaire chiffre = new ChiffreAffaire();
-		chiffre.setSens(SensOperation.CREDIT);
-		chiffre.setAnnee(annee);
-		chiffre.setCompte(compteRepo.findById(numCpt).get());
-		chiffre.setMontant(getCACrediteurCompte(annee, numCpt));
-		return chiffreAffaireRepo.save(chiffre).getId();
-	}
-	 
-	
-	
+	public List<Agent> getAllAgent() {
 		
-	
+		return (List<Agent>) agentRepo.findAll();
+	}
 }

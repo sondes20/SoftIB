@@ -3,16 +3,20 @@ package tn.banque.softib.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 public class Credit implements Serializable{
@@ -23,7 +27,7 @@ public class Credit implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(insertable=false, updatable=false)
+	@Column(insertable=false, updatable=false, nullable=false)
 	private long id;
 	@Enumerated(EnumType.STRING)
 	private TypeCredit type;
@@ -33,25 +37,23 @@ public class Credit implements Serializable{
 	private int dureeDePaiement;
 	private double montantMensuel;
 	private String dateDePaiement; //Date.day
+	@JsonProperty
 	private boolean isPay;
-	@ManyToOne
+	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER)
 	private Client client;
 	public Credit() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Credit(TypeCredit type, Date dateCredit, double montant, int dureeDePaiement, double montantMensuel,
-			String dateDePaiement, boolean isPay, Client client) {
+	
+	public Credit(int dureeDePaiement, double montantMensuel, String dateDePaiement, boolean isPay) {
 		super();
-		this.type = type;
-		this.dateCredit = dateCredit;
-		this.montant = montant;
 		this.dureeDePaiement = dureeDePaiement;
 		this.montantMensuel = montantMensuel;
 		this.dateDePaiement = dateDePaiement;
 		this.isPay = isPay;
-		this.client = client;
 	}
+
 	public long getId() {
 		return id;
 	}

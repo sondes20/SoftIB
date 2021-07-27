@@ -25,12 +25,11 @@ public class Banque implements Serializable{
 	private String nom;
 	private String telephone;
 	private String adresse;
-	@OneToMany(mappedBy="banque", cascade=CascadeType.ALL)
+	@OneToMany(mappedBy="banque", cascade=CascadeType.REMOVE )
 	private List<Agence> agences;
 	@OneToMany(mappedBy="banque", cascade=CascadeType.ALL)
 	private List<PackProduit> packProduits;
-	@OneToMany(mappedBy="banque", cascade=CascadeType.ALL)
-	private List<Compte> comptes;
+	
 	public Banque() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -77,16 +76,11 @@ public class Banque implements Serializable{
 	public void setPackProduits(List<PackProduit> packProduits) {
 		this.packProduits = packProduits;
 	}
-	public List<Compte> getComptes() {
-		return comptes;
-	}
-	public void setComptes(List<Compte> comptes) {
-		this.comptes = comptes;
-	}
+	
 	@Override
 	public String toString() {
 		return "Banque [id=" + id + ", nom=" + nom + ", telephone=" + telephone + ", adresse=" + adresse + ", agences="
-				+ agences + ", packProduits=" + packProduits + ", comptes=" + comptes + "]";
+				+ agences + ", packProduits=" + packProduits + "]";
 	}
 	
 	

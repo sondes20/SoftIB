@@ -8,22 +8,20 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tn.banque.softib.SoftIBApplicationTests;
+import tn.banque.softib.entity.Agence;
 import tn.banque.softib.entity.Agent;
-import tn.banque.softib.entity.Banque;
 import tn.banque.softib.entity.Client;
 import tn.banque.softib.entity.Compte;
-import tn.banque.softib.entity.EtatCivil;
-import tn.banque.softib.entity.TypeClient;
-import tn.banque.softib.entity.TypeCompte;
-import tn.banque.softib.entity.TypeContratTravail;
+import tn.banque.softib.entity.DemandeInscription;
+import tn.banque.softib.repository.IAgenceRepository;
 import tn.banque.softib.repository.IAgentRepository;
 import tn.banque.softib.repository.IBanqueRepository;
 import tn.banque.softib.repository.IClientRepository;
 import tn.banque.softib.repository.ICompteRepository;
+import tn.banque.softib.repository.IDemandeInscriptionRepository;
 @Service
 public class ClientServices implements IClientServices {
-	private static final Logger l = LogManager.getLogger(SoftIBApplicationTests.class);
+	private static final Logger l = LogManager.getLogger(ClientServices.class);
 	@Autowired
 	IClientRepository clientRepository;
 	@Autowired
@@ -32,6 +30,10 @@ public class ClientServices implements IClientServices {
 	IBanqueRepository banqueRepository;
 	@Autowired
 	IAgentRepository agentRepo;
+	@Autowired
+	IDemandeInscriptionRepository demandeInscriRepo;
+	@Autowired
+	IAgenceRepository agenceRepo;
 
 	@Override
 	public Client modifierClient(String id) {
@@ -46,55 +48,47 @@ public class ClientServices implements IClientServices {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public Client ajouterEtAffecterClientACompteEtAgent(String identifiant, String nom, String prenom, Date dateNaissance, String adresse, String telephone,
-			String email, String fonction, TypeContratTravail typeCT, EtatCivil etatCivil, String nomConjoint,
-			String cINConjoint, String fonctionConjoint, int nbrEnfants, double revenuBrut, TypeClient type, String av, TypeCompte typeCompte, String codeAgent) {
+	public Client ajouterEtAffecterClientACompteEtAgentEtAgence(boolean isAccepted, long idDemande, Compte compte, String codeAgent, long idAgence){
 		//if(isValid)
-		Client c = new Client();
-		c.setIdentifiant(identifiant);
-		c.setNom(nom);
-		c.setPrenom(prenom);
-		c.setDateNaissance(dateNaissance);
-		c.setAdresse(adresse);
-		c.setTelephone(telephone);
-		c.setEmail(email);
-		c.setFonction(fonction);
-		c.setTypeCT(typeCT);
-		c.setEtatCivil(etatCivil);
-		c.setNom(nomConjoint);
-		c.setCINConjoint(cINConjoint);
-		c.setFonctionConjoint(fonctionConjoint);
-		c.setNbrEnfants(nbrEnfants);
-		c.setRevenuBrut(revenuBrut);
-		c.setType(type);
-		clientRepository.save(c);
-		String idCompte = identifiant+=new Date().getDay()+new Date().getMonth()+new Date().getYear()+"/"+ type;
-		Compte comp1 = new Compte(idCompte);
-		comp1.setDateCreation(new Date());
-		comp1.setAvantage(av);
-		comp1.setType(typeCompte);
-		comp1.setClient(c);
-		compteRepository.save(comp1);
+		Client client = new Client();
+		DemandeInscription demandeInscri = demandeInscriRepo.findById(idDemande).get();
+		if(isAccepted==true){
+		client.setIdentifiant(demandeInscri.getCin());
+		client.setDateNaissance(demandeInscri.getDateNaissance());
+		client.setAdresse(demandeInscri.getAdresse());
+		client.setEmail(demandeInscri.getEmail());
+		client.setTelephone(demandeInscri.getTelephone());
+		client.setFonction(demandeInscri.getFonction());
+		client.setNom(demandeInscri.getNom());
+		client.setPrenom(demandeInscri.getPrenom());
+		client.setType(demandeInscri.getType());
+		clientRepository.save(client);
+		String idCompte = demandeInscri.getCin()+new Date().getDay()+new Date().getMonth()+new Date().getYear();
+		compte.setDateCreation(new Date());
+		compte.setNCompte(idCompte);
+		compte.setClient(client);
+		Agence agence = agenceRepo.findById(idAgence).get();
+		compte.setAgence(agence);
+		compteRepository.save(compte);
 		Agent ag =agentRepo.findById(codeAgent).get();
 		if(ag.getNbClients()<50){
-		ag.getClients().add(c);
+		ag.getClients().add(client);
 		ag.setNbClients(ag.getNbClients()+1);
 		agentRepo.save(ag);
 		}else{
 			l.error("Vous ne pouvez pas affecter ce client à cet agent! veuillez réessayer avec un autre agent SVP");
 		}
-		return c;
+		}else{
+			demandeInscriRepo.delete(demandeInscri);
+		}
+		return client;
 		
 	}
 
 	@Override
-	public void affecterBanqueACompte(long idB, String idC) {
-		Banque b = banqueRepository.findById(idB).get();
-		Compte c = compteRepository.findById(idC).get();
-		c.setBanque(b);
-		compteRepository.save(c);
+	public DemandeInscription ajouterDemande(DemandeInscription DI) {
 		
-		
+		return demandeInscriRepo.save(DI);
 	}
 
 }
