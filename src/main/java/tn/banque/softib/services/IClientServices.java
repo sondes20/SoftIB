@@ -14,5 +14,5 @@ public interface IClientServices {
 	public DemandeInscription ajouterDemande(DemandeInscription DI);
 	public Client modifierClient(String id);
 	public Set<Client> listClientParAgence(long idA);
-	public Client ajouterEtAffecterClientACompteEtAgentEtAgence(boolean isAccepted, long idDemande, Compte compte, String codeAgent, long idAgence);
+	public Client ajouterEtAffecterClientACompteEtAgentEtAgence(long idDemande, Compte compte, String codeAgent, long idAgence);
 }

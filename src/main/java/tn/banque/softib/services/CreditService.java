@@ -1,7 +1,7 @@
 package tn.banque.softib.services;
 
+
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +23,7 @@ import tn.banque.softib.repository.IClientRepository;
 import tn.banque.softib.repository.ICompteRepository;
 import tn.banque.softib.repository.ICreditRepository;
 import tn.banque.softib.repository.IDemandeCreditRepository;
+import tn.banque.softib.repository.ITmmRepository;
 
 @Service
 public class CreditService implements ICreditService {
@@ -35,11 +36,13 @@ public class CreditService implements ICreditService {
 	IClientRepository clientRepo;
 	@Autowired
 	IDemandeCreditRepository demandeCreditRepo;
+	@Autowired
+	ITmmRepository TMMRepo;
 
 	@Override
-	public double SommeCreditClients() {
+	public double SommeCreditClients(long id) {
 		
-		return creditRepo.findSumCreditClients();
+		return creditRepo.findSumCreditClients(id);
 	}
 
 	@Override
@@ -92,5 +95,25 @@ public class CreditService implements ICreditService {
 		}
 		return demandeCredit;
 	}
+		
+		@SuppressWarnings("unused")
+		@Override
+		public TMM ajouterTMM() throws IOException {
+			TMM tmm = new TMM();
+			Document webPage = Jsoup.connect("https://www.bct.gov.tn/bct/siteprod/tableau_statistique_a.jsp?params=PL203105").get();
+		    Element tbody = webPage.getElementById("bct-hdr-classic");
+		    Elements rows = tbody.getElementsByTag("tr");
+			for(Element row : rows){
+				Elements tds = row.getElementsByTag("td");
+				for(int i = 0 ; i<tds.size() ; i++){
+					tmm.setMonth(tds.get(0).text());
+				    tmm.setTmm(tds.get(i+1).text());
+				    TMMRepo.save(tmm);
+				    
+				}
+			}
+			return tmm;
+			
+		}
 
 }

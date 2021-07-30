@@ -1,7 +1,10 @@
 package tn.banque.softib.services;
 
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.lang.model.element.Element;
 
 import tn.banque.softib.entity.Credit;
 import tn.banque.softib.entity.DemandeCredit;
@@ -14,8 +17,11 @@ public interface ICreditService {
 	
 	public void ajouterEtAffecterCreditAClient(long idDemandeCredit, Credit credit, boolean isAccepted);
 	
-	public double SommeCreditClients();
+	public double SommeCreditClients(long id);
+	
+	public TMM ajouterTMM() throws IOException;
 	
 	public List<TMM> getTMM();
+	
 
 }

@@ -16,8 +16,8 @@ public interface IOperationService {
 	public Compte retrait(TypeOperation type, String numCompte, String idAgent, double montant);
 	public Set<Compte> virement(TypeOperation type, String numCptUser, String numCptBenef, String idAgent, double montant);
 	public Agent getAgentById(String id);
-	public double getMoyOperationParJour(SensOperation sens, Date date);
+	//public Double getMoyOperationParJour(SensOperation sens, Date date);
 	public void archiverListOperationsParJour();
 	public double getSoldeByNumCompte(String idcpt);
-	public List<Operation> getAllOperationsParCompteAndPeriode(String idCompte, int mois);
+	public List<Operation> getAllOperationsParCompteAndPeriode(String idCompte, int mois, int annee);
 }

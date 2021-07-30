@@ -1,7 +1,5 @@
 package tn.banque.softib.services;
 
-import java.util.Date;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +7,7 @@ import org.springframework.stereotype.Service;
 
 import tn.banque.softib.entity.Agent;
 import tn.banque.softib.entity.Client;
-import tn.banque.softib.entity.Compte;
 import tn.banque.softib.entity.SensOperation;
-import tn.banque.softib.entity.TypeCompte;
 import tn.banque.softib.repository.IAgentRepository;
 import tn.banque.softib.repository.IClientRepository;
 import tn.banque.softib.repository.ICompteRepository;
@@ -35,23 +31,27 @@ public class AgentService implements IAgentService {
 		return agentRepository.save(agent).getCode();
 	}
 
-	@Override
+	/*@Override
 	public void affecterAgentAClient(String idAg, String idClient) {
 		Agent ag = agentRepository.findById(idAg).get();
 		Client cl = clientRepo.findById(idClient).get();
 		ag.getClients().add(cl);
 		agentRepository.save(ag);	
-	}
+	}*/
 	
 	@Override
-	public double getSomTransactionsByDate(Date date) {
-	
-		 double somcredit = operationRepo.findSumTransactionsByDate(SensOperation.CREDIT, date);
-		 double somdebit = operationRepo.findSumTransactionsByDate(SensOperation.DEBIT, date);
-		 
-		 double somtransaction = somcredit-somdebit;
-			
+	public double getMoyTransactionsByAgence(SensOperation sens, long idag) {
 		
-		 return somtransaction;
-}
+		 return operationRepo.findAvergeFromOperationByJour(sens, idag);
+		 
+		 }
+
+	@Override
+	public double getEtatJournalierDesTransaction(long idag) {
+		double sumCreit = operationRepo.findSumTransactionsByAgence(SensOperation.CREDIT, idag);
+		double sumDebit = operationRepo.findSumTransactionsByAgence(SensOperation.DEBIT, idag);
+		
+		double etat =sumCreit-sumDebit;
+		return etat;
+	}
 }

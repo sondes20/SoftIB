@@ -6,17 +6,14 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import tn.banque.softib.entity.Agence;
 import tn.banque.softib.entity.Agent;
-import tn.banque.softib.entity.Banque;
 import tn.banque.softib.entity.Compte;
 import tn.banque.softib.entity.TypeCompte;
 import tn.banque.softib.repository.IAgenceRepository;
 import tn.banque.softib.repository.IAgentRepository;
-import tn.banque.softib.repository.IBanqueRepository;
 import tn.banque.softib.repository.ICompteRepository;
 import tn.banque.softib.repository.IOperationRepository;
 @Service

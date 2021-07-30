@@ -12,6 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +65,7 @@ public class SoftIBApplicationTests {
 		
 		SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
 		Date d1 = date.parse("2021-07-24");
-		Date d2 = date.parse("2021-07-24");
+		Date d2 = date.parse("2021-07-28");
 		Date d3 = date.parse("1986-09-19");
 		Date d4 = date.parse("1957-02-02");
 		Date d5 = date.parse("1984-11-20");
@@ -146,9 +148,7 @@ public class SoftIBApplicationTests {
 		//l.info(operationServices.getAgentById("001").getPrenom());
 		//l.info(operationServices.getSoldeByNumCompte("0002255566121"));
 		 
-		//operationServices.getMoyOperationParJour(SensOperation.CREDIT, d2);
-		//operationServices.getMoyOperationParJour(SensOperation.DEBIT, d2);
-		 
+		
 		 l.info(compteService.avgSolde());
 		 
 		 l.info(compteService.listNumCompteAyantMaxSolde(TypeCompte.COURANT));
@@ -168,50 +168,39 @@ public class SoftIBApplicationTests {
 		     //confirmé
 		
 		
-		creditService.getTMM();
+		//creditService.getTMM();
 		
 		
+		//l.info(operationServices.getMoyOperationParJour(SensOperation.CREDIT, d2));
 		
+		
+	/*	
+		Document webPage;
+		try {
+			webPage = Jsoup.connect("https://www.bct.gov.tn/bct/siteprod/tableau_statistique_a.jsp?params=PL203105").get();
+			Element tbody = webPage.getElementById("bct-hdr-classic");
+		    Elements rows = tbody.getElementsByTag("tr");
+			for(Element row : rows){
+				Elements tds = row.getElementsByTag("td");
+				for(int i = 0 ; i<tds.size() ; i++){
+				    System.out.println(tds.get(i).text());
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 	
-		
-		 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-			
-		
-		
-		
-		
-		
-		
-				
-		
-		
-		
-			
-		
-		
-		
-		
-		
-		
-
-		
+		try {
+			creditService.ajouterTMM();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
 	}
-
 	public static Logger getL() {
 		return l;
 	}
 	
-
 }

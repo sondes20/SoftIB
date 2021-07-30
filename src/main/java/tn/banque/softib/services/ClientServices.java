@@ -48,11 +48,11 @@ public class ClientServices implements IClientServices {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public Client ajouterEtAffecterClientACompteEtAgentEtAgence(boolean isAccepted, long idDemande, Compte compte, String codeAgent, long idAgence){
+	public Client ajouterEtAffecterClientACompteEtAgentEtAgence(long idDemande, Compte compte, String codeAgent, long idAgence){
 		//if(isValid)
 		Client client = new Client();
 		DemandeInscription demandeInscri = demandeInscriRepo.findById(idDemande).get();
-		if(isAccepted==true){
+		demandeInscri.setAccepted(true);
 		client.setIdentifiant(demandeInscri.getCin());
 		client.setDateNaissance(demandeInscri.getDateNaissance());
 		client.setAdresse(demandeInscri.getAdresse());
@@ -78,9 +78,7 @@ public class ClientServices implements IClientServices {
 		}else{
 			l.error("Vous ne pouvez pas affecter ce client à cet agent! veuillez réessayer avec un autre agent SVP");
 		}
-		}else{
-			demandeInscriRepo.delete(demandeInscri);
-		}
+		
 		return client;
 		
 	}

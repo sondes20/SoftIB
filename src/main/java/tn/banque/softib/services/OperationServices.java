@@ -46,6 +46,7 @@ public class OperationServices implements IOperationService {
 		cp.setSolde(cp.getSolde()+montant);
 		return cp;
 	}
+	
 	@Override
 	@Transactional
 	public Compte retrait(TypeOperation type, String numCompte, String idAgent, double montant){
@@ -67,6 +68,7 @@ public class OperationServices implements IOperationService {
 		}
 		return cp;
 	}
+	
 	@Override
 	@Transactional
 	public Set<Compte> virement(TypeOperation type, String numCptUser, String numCptBenef, String idAgent,
@@ -78,21 +80,14 @@ public class OperationServices implements IOperationService {
 		comptes.add(cptBenef);
 		return comptes;
 	}
+	
 	@Override
 	public Agent getAgentById(String id) {
 		
 		return agentRepo.findById(id).get();
 	}
-	@Override
-	public double getMoyOperationParJour(SensOperation sens, Date date) {
-		List<Operation> operations= (List<Operation>) operationRepo.findAll();
-		if(operations.isEmpty()){
-			l.error("Aucune operation dans cette date");
-			return 0;
-		}else
-			l.info("La moyenne journalier des transaction à cette date est:" + operationRepo.findAvergeFromOperationByJour(sens, date));
- 		return operationRepo.findAvergeFromOperationByJour(sens, date);
-	}
+	
+	
 	@Override
 	//@Scheduled(cron="0 0 0 * * *")
 	public void archiverListOperationsParJour() {
@@ -108,9 +103,9 @@ public class OperationServices implements IOperationService {
 	}
 	
 	@Override
-	public List<Operation> getAllOperationsParCompteAndPeriode(String idCompte, int mois) {
+	public List<Operation> getAllOperationsParCompteAndPeriode(String idCompte, int mois, int annee) {
 		Compte compte = cmptRepo.findById(idCompte).get();
-		return operationRepo.findByCompteAndPeriod(compte, mois);
+		return operationRepo.findByCompteAndPeriod(compte, mois, annee);
 	}
 	
 

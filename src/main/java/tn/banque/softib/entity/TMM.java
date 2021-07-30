@@ -12,12 +12,12 @@ public class TMM {
 	private long id;
 	private String year;
 	private String month;
-	private float tmm;
+	private String tmm;
 	public TMM() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public TMM(String year, String month, float tmm) {
+	public TMM(String year, String month, String tmm) {
 		super();
 		this.year = year;
 		this.month = month;
@@ -41,10 +41,10 @@ public class TMM {
 	public void setMonth(String month) {
 		this.month = month;
 	}
-	public float getTmm() {
+	public String getTmm() {
 		return tmm;
 	}
-	public void setTmm(float tmm) {
+	public void setTmm(String tmm) {
 		this.tmm = tmm;
 	}
 	@Override
